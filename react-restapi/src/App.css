@@ -2,118 +2,170 @@
 
 body {
   margin: 0;
-  background: linear-gradient(135deg, #fdf6f2, #f7e6dc);
   font-family: "Inter", sans-serif;
+  background: linear-gradient(135deg, #fdf6f2, #f7e6dc);
   color: #4a3f35;
+  transition: all 0.4s ease;
+}
+
+/* DARK MODE */
+body.dark {
+  background: linear-gradient(135deg, #1e1e1e, #2c2c2c);
+  color: #f5f5f5;
 }
 
 .wrapper {
-  max-width: 1100px;
-  margin: auto;
-  padding: 60px 20px;
+  max-width: 1000px;
+  margin: 80px auto;
+  padding: 0 30px 80px 30px;
+  text-align: center;
 }
 
+/* ✨ ANIMATED TITLE */
 .hero {
   font-family: "Playfair Display", serif;
-  font-size: 3rem;
-  text-align: center;
-  margin-bottom: 50px;
-  animation: fadeDown 1s ease;
+  font-size: 3.5rem;
+  margin-bottom: 60px;
+  transition: all 0.4s ease;
+  background: linear-gradient(45deg, #e6b8a2, #d89f86, #f3d5c0);
+  background-size: 200% 200%;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: glowMove 6s ease infinite;
 }
 
+.hero:hover {
+  transform: scale(1.05) rotate(-1deg);
+  text-shadow: 0 0 25px rgba(255, 200, 180, 0.6);
+}
+
+/* FORM */
 .journal-box {
   background: white;
-  padding: 30px;
+  padding: 40px;
   border-radius: 25px;
   box-shadow: 0 20px 40px rgba(0,0,0,0.05);
   margin-bottom: 60px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
-  animation: fadeUp 1s ease;
+  gap: 20px;
+  transition: all 0.4s ease;
 }
 
-input, textarea {
-  border: none;
-  background: #f9f1ec;
-  padding: 15px;
-  border-radius: 15px;
-  font-size: 1rem;
-  outline: none;
+body.dark .journal-box {
+  background: #2f2f2f;
+  box-shadow: 0 20px 40px rgba(0,0,0,0.4);
+}
+
+/* EMOJI PICKER */
+.emoji-picker {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.emoji {
+  font-size: 1.8rem;
+  cursor: pointer;
   transition: 0.3s ease;
 }
 
-input:focus, textarea:focus {
-  background: #f3e4dc;
+.emoji:hover {
+  transform: scale(1.3);
 }
 
+.selected {
+  transform: scale(1.4);
+}
+
+/* TEXTAREA */
+textarea {
+  border: none;
+  background: #f9f1ec;
+  padding: 18px;
+  border-radius: 15px;
+  font-size: 1rem;
+  outline: none;
+  resize: none;
+  min-height: 120px;
+  transition: 0.3s ease;
+}
+
+body.dark textarea {
+  background: #3a3a3a;
+  color: white;
+}
+
+/* BUTTON */
 button {
   background: #e6b8a2;
   border: none;
-  padding: 12px;
-  border-radius: 20px;
+  padding: 14px;
+  border-radius: 25px;
   font-weight: 500;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 button:hover {
-  background: #d89f86;
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(0,0,0,0.1);
 }
 
+/* CARDS */
 .grid {
   column-count: 3;
-  column-gap: 20px;
+  column-gap: 25px;
 }
 
 .card {
   background: white;
   padding: 25px;
   border-radius: 20px;
-  margin-bottom: 20px;
+  margin-bottom: 25px;
   display: inline-block;
   width: 100%;
   box-shadow: 0 15px 30px rgba(0,0,0,0.05);
   transition: all 0.3s ease;
-  animation: fadeUp 0.8s ease;
 }
 
 .card:hover {
   transform: translateY(-5px);
-  box-shadow: 0 25px 40px rgba(0,0,0,0.08);
 }
 
+body.dark .card {
+  background: #2f2f2f;
+}
+
+/* TAG */
 .tag {
-  font-size: 0.85rem;
-  background: #f3d5c0;
-  padding: 6px 12px;
-  border-radius: 50px;
-  display: inline-block;
+  font-size: 1.2rem;
+  display: block;
   margin-bottom: 15px;
 }
 
-/* Animations */
-
-@keyframes fadeUp {
-  from {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+/* THEME TOGGLE BUTTON */
+.theme-toggle {
+  position: fixed;
+  bottom: 30px;
+  right: 30px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
+  font-size: 1.5rem;
+  background: #e6b8a2;
+  box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+  transition: all 0.3s ease;
 }
 
-@keyframes fadeDown {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+.theme-toggle:hover {
+  transform: rotate(20deg) scale(1.1);
+}
+
+/* GRADIENT ANIMATION */
+@keyframes glowMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
 }

@@ -6,10 +6,17 @@ function App() {
   const [entries, setEntries] = useState([]);
   const [emotion, setEmotion] = useState("");
   const [description, setDescription] = useState("");
+  const [darkMode, setDarkMode] = useState(false);
+
+  const emojis = ["😊", "😌", "😢", "🔥", "🌸", "💭", "🌙", "✨"];
 
   useEffect(() => {
     fetchEntries();
   }, []);
+
+  useEffect(() => {
+    document.body.className = darkMode ? "dark" : "";
+  }, [darkMode]);
 
   const fetchEntries = async () => {
     const { data } = await supabase
@@ -37,13 +44,17 @@ function App() {
       <h1 className="hero">Your Everyday Record</h1>
 
       <form className="journal-box" onSubmit={handleSubmit}>
-        <input
-          type="text"
-          placeholder="Mood..."
-          value={emotion}
-          onChange={(e) => setEmotion(e.target.value)}
-          required
-        />
+        <div className="emoji-picker">
+          {emojis.map((emoji) => (
+            <span
+              key={emoji}
+              className={`emoji ${emotion === emoji ? "selected" : ""}`}
+              onClick={() => setEmotion(emoji)}
+            >
+              {emoji}
+            </span>
+          ))}
+        </div>
 
         <textarea
           placeholder="Write about your day..."
@@ -63,6 +74,13 @@ function App() {
           </div>
         ))}
       </div>
+
+      <button
+        className="theme-toggle"
+        onClick={() => setDarkMode(!darkMode)}
+      >
+        {darkMode ? "☀️" : "🌙"}
+      </button>
     </div>
   );
 }
