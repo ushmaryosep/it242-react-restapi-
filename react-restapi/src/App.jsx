@@ -17,8 +17,13 @@ function App() {
     fetchEmojis();
   }, []);
 
+  // Theme Toggle Effect
   useEffect(() => {
-    document.body.className = darkMode ? "dark" : "";
+    if (darkMode) {
+      document.body.classList.add("dark");
+    } else {
+      document.body.classList.remove("dark");
+    }
   }, [darkMode]);
 
   const fetchEntries = async () => {
@@ -36,7 +41,7 @@ function App() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    if (!selectedEmoji) return alert("Pick an emoji to set the mood!");
+    if (!selectedEmoji) return alert("Please select an emoji to describe your day!");
 
     await supabase.from("journal_entries").insert([
       { mood: selectedMood, description, emoji_id: selectedEmoji }
@@ -60,13 +65,13 @@ function App() {
         <form className="journal-form" onSubmit={handleSubmit}>
           
           <div className="input-group">
-            <label>Current Vibe</label>
+            <label>Your Vibe of the Day</label>
             <select
               value={selectedMood}
               onChange={(e) => setSelectedMood(e.target.value)}
               required
             >
-              <option value="">Select Mood</option>
+              <option value="" disabled>Select Mood</option>
               {moods.map((mood) => (
                 <option key={mood} value={mood}>{mood}</option>
               ))}
@@ -74,9 +79,9 @@ function App() {
           </div>
 
           <div className="input-group">
-            <label>The Narrative</label>
+            <label>Your Story of the Day</label>
             <textarea
-              placeholder="Write your story..."
+              placeholder="What made today cinematic?"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               required
@@ -84,7 +89,7 @@ function App() {
           </div>
 
           <div className="input-group">
-            <label>Visual Identity</label>
+            <label>Describe your day (Select an Emoji)</label>
             <div className="emoji-selector">
               {emojis.map((emoji) => (
                 <span
@@ -98,30 +103,11 @@ function App() {
             </div>
           </div>
 
-          <button type="submit" className="save-btn">Capture Moment</button>
+          <button type="submit" className="save-btn">Capture Memory</button>
         </form>
       </main>
 
-      <section className="archive-section">
-        <h2 className="archive-title">Recent Records</h2>
-        <div className="entries-grid">
-          {entries.map((entry) => (
-            <div key={entry.id} className="memory-card">
-              <div className="card-top">
-                <span className="emoji-display">
-                  {entry.emojis?.symbol}
-                </span>
-                <span className="timestamp">
-                  {new Date(entry.created_at).toLocaleDateString([], { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                </span>
-              </div>
-              <h3>{entry.mood}</h3>
-              <p>{entry.description}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
+      {/* Theme Switcher Button */}
       <button
         className="theme-switch"
         onClick={() => setDarkMode(!darkMode)}

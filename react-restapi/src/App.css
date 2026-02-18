@@ -7,120 +7,133 @@
   --text-dim: rgba(255, 255, 255, 0.6);
 }
 
-body {
-  margin: 0;
-  font-family: "Plus Jakarta Sans", sans-serif;
-  color: white;
-  overflow-x: hidden;
-  background: #0a0a0a; /* Fallback */
+/* Reset and Centering */
+* {
+  box-sizing: border-box;
 }
 
-/* Kimi No Na Wa Background Optimization */
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Plus Jakarta Sans", sans-serif;
+  color: white;
+  min-height: 100vh;
+  display: flex;
+  justify-content: center; /* Center horizontally */
+  align-items: flex-start;
+  overflow-x: hidden;
+}
+
+/* GIF BACKGROUND FIX */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   background: url("https://raw.githubusercontent.com/ushmaryosep/it242-react-restapi-/refs/heads/main/Your%20Name%20Falling%20GIF%20by%20All%20The%20Anime%20—%20Anime%20Limited.gif") center/cover no-repeat;
-  filter: brightness(0.5) saturate(1.2);
+  filter: blur(4px) brightness(0.6); /* Adjusted blur/brightness for visibility */
   z-index: -2;
 }
 
 body.dark::before {
-  filter: brightness(0.25) contrast(1.1);
+  filter: blur(4px) brightness(0.3);
 }
 
 .app-container {
-  min-height: 100vh;
+  width: 100%;
+  max-width: 1200px;
   display: flex;
   flex-direction: column;
-  align-items: center;
-  padding: 40px 20px;
+  align-items: center; /* Center children horizontally */
+  padding: 60px 20px;
+  text-align: center; /* Ensure text is centered */
 }
 
-/* HEADER ANIMATION */
+/* HERO SECTION */
 .hero-header {
-  text-align: center;
-  margin-bottom: 80px;
-  animation: fadeInDown 1.2s ease;
+  margin-bottom: 60px;
 }
 
 .hero-title {
   font-family: "Anton", sans-serif;
-  font-size: clamp(3rem, 10vw, 7rem);
-  letter-spacing: 12px;
+  font-size: clamp(3rem, 12vw, 6.5rem);
+  letter-spacing: 10px;
   margin: 0;
-  background: linear-gradient(to bottom, #fff 40%, rgba(255,255,255,0.2));
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
+  color: white;
+  text-transform: uppercase;
   animation: float 6s ease-in-out infinite;
 }
 
 .hero-subtitle {
+  font-size: 0.9rem;
   font-weight: 300;
-  letter-spacing: 4px;
+  letter-spacing: 5px;
   text-transform: uppercase;
   color: var(--text-dim);
-  margin-top: 10px;
+  margin-top: 15px;
 }
 
-/* FOCUSED FORM */
+/* GLASS CARD FOCUS */
 .glass-wrapper {
   width: 100%;
-  max-width: 650px; /* Thinner width for modern center look */
+  max-width: 600px;
   background: var(--glass);
-  backdrop-filter: blur(20px) saturate(180%);
+  backdrop-filter: blur(25px);
   border: 1px solid var(--glass-border);
   border-radius: 40px;
-  padding: 40px;
-  box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+  padding: 50px 40px;
+  box-shadow: 0 25px 50px rgba(0,0,0,0.4);
 }
 
 .journal-form {
   display: flex;
   flex-direction: column;
-  gap: 30px;
+  gap: 35px;
 }
 
 .input-group {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 12px;
+  text-align: left; /* Align labels to the left of the input */
 }
 
 .input-group label {
-  font-size: 0.75rem;
-  font-weight: 700;
+  font-size: 0.7rem;
+  font-weight: 800;
   text-transform: uppercase;
   letter-spacing: 2px;
   color: var(--text-dim);
-  padding-left: 10px;
+  margin-left: 5px;
 }
 
+/* SELECT & DROPDOWN FIX */
 select, textarea {
-  padding: 20px;
-  border-radius: 20px;
+  padding: 18px;
+  border-radius: 18px;
   border: 1px solid var(--glass-border);
-  background: rgba(0,0,0,0.2);
+  background: rgba(0, 0, 0, 0.4);
   color: white;
   font-size: 1rem;
-  font-family: inherit;
-  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
 }
 
-select:focus, textarea:focus {
-  outline: none;
-  background: rgba(255,255,255,0.1);
-  border-color: #fff;
-  transform: translateY(-2px);
+/* Fix for white font on white background in select options */
+select option {
+  background-color: #1a1a1a;
+  color: white;
 }
 
-/* EMOJI SELECTOR */
+textarea {
+  min-height: 140px;
+  resize: none;
+}
+
+/* EMOJI BUTTONS */
 .emoji-selector {
   display: flex;
   justify-content: center;
-  gap: 15px;
+  gap: 12px;
   flex-wrap: wrap;
-  padding: 10px 0;
 }
 
 .emoji-btn {
@@ -128,126 +141,61 @@ select:focus, textarea:focus {
   cursor: pointer;
   padding: 10px;
   border-radius: 15px;
-  transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: 0.3s;
   background: transparent;
-  border: 1px solid transparent;
-}
-
-.emoji-btn:hover {
-  background: rgba(255,255,255,0.1);
-  transform: scale(1.2);
+  border: none;
 }
 
 .emoji-btn.active {
-  background: white;
-  transform: scale(1.3) rotate(5deg);
-  box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+  background: rgba(255, 255, 255, 0.2);
+  transform: scale(1.3);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.3);
 }
 
 .save-btn {
   background: white;
   color: black;
   border: none;
-  padding: 22px;
-  border-radius: 20px;
+  padding: 20px;
+  border-radius: 18px;
   font-weight: 800;
-  font-size: 1rem;
   text-transform: uppercase;
   letter-spacing: 2px;
   cursor: pointer;
-  transition: all 0.3s ease;
-  margin-top: 10px;
+  transition: 0.3s ease;
 }
 
 .save-btn:hover {
-  transform: translateY(-3px) scale(1.02);
-  box-shadow: 0 15px 30px rgba(255,255,255,0.2);
+  transform: translateY(-3px);
+  box-shadow: 0 10px 25px rgba(255,255,255,0.2);
 }
 
-/* ARCHIVE SECTION */
-.archive-title {
-  text-align: center;
-  margin: 100px 0 40px;
-  font-size: 0.8rem;
-  letter-spacing: 8px;
-  text-transform: uppercase;
-  color: var(--text-dim);
-}
-
-.entries-grid {
-  width: 100%;
-  max-width: 1000px;
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-  gap: 30px;
-}
-
-.memory-card {
-  background: var(--glass);
-  backdrop-filter: blur(15px);
-  border: 1px solid var(--glass-border);
-  padding: 30px;
-  border-radius: 30px;
-  transition: all 0.4s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.memory-card:hover {
-  transform: translateY(-10px);
-  background: rgba(255,255,255,0.15);
-  border-color: #fff;
-}
-
-.card-top {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-bottom: 20px;
-}
-
-.emoji-display { font-size: 1.5rem; }
-.timestamp { font-size: 0.7rem; color: var(--text-dim); font-weight: 600; }
-
-.memory-card h3 {
-  margin: 0 0 10px;
-  font-size: 1.2rem;
-  font-weight: 800;
-}
-
-.memory-card p {
-  margin: 0;
-  line-height: 1.6;
-  font-size: 0.95rem;
-  color: rgba(255,255,255,0.8);
-}
-
-/* THEME & ANIMATIONS */
-@keyframes float {
-  0%, 100% { transform: translateY(0); }
-  50% { transform: translateY(-20px); }
-}
-
-@keyframes fadeInDown {
-  from { opacity: 0; transform: translateY(-30px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-
+/* THEME SWITCH FIX */
 .theme-switch {
   position: fixed;
-  bottom: 40px;
-  right: 40px;
-  width: 60px;
-  height: 60px;
-  border-radius: 20px;
+  bottom: 30px;
+  right: 30px;
+  width: 55px;
+  height: 55px;
+  border-radius: 50%;
   background: white;
   color: black;
   border: none;
-  font-size: 1.5rem;
+  font-size: 1.4rem;
   cursor: pointer;
-  box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-  z-index: 100;
-  transition: 0.3s;
+  display: flex;
+  justify-content: center;
+  align-items: center; /* Center the icon */
+  box-shadow: 0 10px 20px rgba(0,0,0,0.4);
+  z-index: 1000;
+  transition: 0.3s ease;
 }
 
-.theme-switch:hover { transform: rotate(15deg) scale(1.1); }
+.theme-switch:hover {
+  transform: scale(1.1);
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-15px); }
+}
