@@ -1,28 +1,22 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./services/supabaseClient";
+import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
-import {
-  AreaChart,
-  Area,
-  XAxis,
-  Tooltip,
-  ResponsiveContainer,
-} from "recharts";
 import "./App.css";
 
 const emotions = [
-  { label: "Focused", color: "#7F5AF0" },
-  { label: "Happy", color: "#2CB67D" },
-  { label: "Calm", color: "#3DA9FC" },
-  { label: "Tired", color: "#F4A261" },
-  { label: "Anxious", color: "#EF4565" },
+  "Inspired",
+  "Soft",
+  "Romantic",
+  "Overwhelmed",
+  "Grateful",
+  "Dreamy",
 ];
 
 function App() {
   const [entries, setEntries] = useState([]);
   const [emotion, setEmotion] = useState("");
   const [description, setDescription] = useState("");
-  const [energy, setEnergy] = useState(5);
 
   useEffect(() => {
     fetchEntries();
@@ -41,12 +35,11 @@ function App() {
     e.preventDefault();
 
     await supabase.from("journal_entries").insert([
-      { emotion, description, energy_level: energy },
+      { emotion, description },
     ]);
 
     setEmotion("");
     setDescription("");
-    setEnergy(5);
     fetchEntries();
   };
 
@@ -54,81 +47,50 @@ function App() {
     <div className="wrapper">
       <motion.h1
         className="hero"
-        animate={{ y: [0, -8, 0] }}
-        transition={{ repeat: Infinity, duration: 4 }}
+        animate={{ y: [0, -6, 0] }}
+        transition={{ repeat: Infinity, duration: 5 }}
       >
-        YOUR EVERYDAY RECORD
+        Your Everyday Record
       </motion.h1>
 
-      <motion.form
-        className="card"
-        onSubmit={handleSubmit}
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-      >
-        <div className="emotion-grid">
+      <form className="journal-box" onSubmit={handleSubmit}>
+        <select
+          value={emotion}
+          onChange={(e) => setEmotion(e.target.value)}
+          required
+        >
+          <option value="">Select Mood</option>
           {emotions.map((e) => (
-            <div
-              key={e.label}
-              className={`emotion-pill ${
-                emotion === e.label ? "active" : ""
-              }`}
-              style={{ borderColor: e.color }}
-              onClick={() => setEmotion(e.label)}
-            >
-              {e.label}
-            </div>
+            <option key={e}>{e}</option>
           ))}
-        </div>
+        </select>
 
         <textarea
-          placeholder="What defined your day?"
+          placeholder="Write about your day like it's a Pinterest caption..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
         />
 
-        <div className="energy">
-          <span>Energy</span>
-          <input
-            type="range"
-            min="1"
-            max="10"
-            value={energy}
-            onChange={(e) => setEnergy(e.target.value)}
-          />
-        </div>
+        <button type="submit">Save Memory</button>
+      </form>
 
-        <button type="submit">Save Entry</button>
-      </motion.form>
-
-      <motion.div
-        className="card"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
+      <Masonry
+        breakpointCols={{ default: 3, 900: 2, 600: 1 }}
+        className="masonry-grid"
+        columnClassName="masonry-column"
       >
-        <h3>Energy Trends</h3>
-        <ResponsiveContainer width="100%" height={200}>
-          <AreaChart data={entries}>
-            <XAxis dataKey="emotion" />
-            <Tooltip />
-            <Area dataKey="energy_level" />
-          </AreaChart>
-        </ResponsiveContainer>
-      </motion.div>
-
-      <div className="entries">
         {entries.map((entry) => (
           <motion.div
             key={entry.id}
-            className="entry"
+            className="entry-card"
             whileHover={{ scale: 1.03 }}
           >
-            <strong>{entry.emotion}</strong>
+            <span className="mood-tag">{entry.emotion}</span>
             <p>{entry.description}</p>
           </motion.div>
         ))}
-      </div>
+      </Masonry>
     </div>
   );
 }
