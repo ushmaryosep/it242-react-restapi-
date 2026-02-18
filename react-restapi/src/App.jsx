@@ -1,16 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./services/supabaseClient";
-import { motion } from "framer-motion";
-import "./App.css";
-
-const emotions = [
-  "Inspired",
-  "Soft",
-  "Romantic",
-  "Overwhelmed",
-  "Grateful",
-  "Dreamy",
-];
 
 function App() {
   const [entries, setEntries] = useState([]);
@@ -33,8 +22,6 @@ function App() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    if (!emotion) return;
-
     const { error } = await supabase.from("journal_entries").insert([
       { emotion, description },
     ]);
@@ -47,53 +34,40 @@ function App() {
   };
 
   return (
-    <div className="wrapper">
-      <motion.h1
-        className="hero"
-        animate={{ y: [0, -6, 0] }}
-        transition={{ repeat: Infinity, duration: 5 }}
-      >
-        Your Everyday Record
-      </motion.h1>
+    <div style={{ padding: "40px", fontFamily: "sans-serif" }}>
+      <h1>Your Everyday Record</h1>
 
-      <form className="journal-box" onSubmit={handleSubmit}>
-        <select
+      <form onSubmit={handleSubmit}>
+        <input
+          type="text"
+          placeholder="Mood"
           value={emotion}
           onChange={(e) => setEmotion(e.target.value)}
           required
-        >
-          <option value="">Select Mood</option>
-          {emotions.map((e) => (
-            <option key={e}>{e}</option>
-          ))}
-        </select>
+        />
+
+        <br /><br />
 
         <textarea
-          placeholder="Write about your day like it's a Pinterest caption..."
+          placeholder="Write about your day..."
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
         />
 
-        <button type="submit">Save Memory</button>
+        <br /><br />
+
+        <button type="submit">Save</button>
       </form>
 
-      <Masonry
-        breakpointCols={{ default: 3, 900: 2, 600: 1 }}
-        className="masonry-grid"
-        columnClassName="masonry-column"
-      >
-        {entries.map((entry) => (
-          <motion.div
-            key={entry.id}
-            className="entry-card"
-            whileHover={{ scale: 1.03 }}
-          >
-            <span className="mood-tag">{entry.emotion}</span>
-            <p>{entry.description}</p>
-          </motion.div>
-        ))}
-      </Masonry>
+      <hr />
+
+      {entries.map((entry) => (
+        <div key={entry.id}>
+          <strong>{entry.emotion}</strong>
+          <p>{entry.description}</p>
+        </div>
+      ))}
     </div>
   );
 }
