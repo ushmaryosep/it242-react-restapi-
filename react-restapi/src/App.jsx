@@ -2,44 +2,31 @@ import { useEffect, useState } from "react";
 import { supabase } from "./services/supabaseClient";
 import { motion } from "framer-motion";
 import {
-  BarChart,
-  Bar,
+  AreaChart,
+  Area,
   XAxis,
-  YAxis,
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
 import "./App.css";
 
 const emotions = [
-  { label: "Happy", emoji: "😊" },
-  { label: "Excited", emoji: "🤩" },
-  { label: "Calm", emoji: "😌" },
-  { label: "Anxious", emoji: "😰" },
-  { label: "Sad", emoji: "😔" },
-  { label: "Angry", emoji: "😡" },
+  { label: "Focused", color: "#7F5AF0" },
+  { label: "Happy", color: "#2CB67D" },
+  { label: "Calm", color: "#3DA9FC" },
+  { label: "Tired", color: "#F4A261" },
+  { label: "Anxious", color: "#EF4565" },
 ];
 
 function App() {
-  const [session, setSession] = useState(null);
   const [entries, setEntries] = useState([]);
-  const [selectedEmotion, setSelectedEmotion] = useState("");
+  const [emotion, setEmotion] = useState("");
   const [description, setDescription] = useState("");
   const [energy, setEnergy] = useState(5);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      setSession(data.session);
-    });
-
-    supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
-    });
+    fetchEntries();
   }, []);
-
-  useEffect(() => {
-    if (session) fetchEntries();
-  }, [session]);
 
   const fetchEntries = async () => {
     const { data } = await supabase
@@ -47,107 +34,98 @@ function App() {
       .select("*")
       .order("created_at", { ascending: false });
 
-    setEntries(data);
+    setEntries(data || []);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
     await supabase.from("journal_entries").insert([
-      {
-        user_id: session.user.id,
-        emotion: selectedEmotion,
-        description,
-        energy_level: energy,
-      },
+      { emotion, description, energy_level: energy },
     ]);
 
+    setEmotion("");
     setDescription("");
-    setSelectedEmotion("");
     setEnergy(5);
     fetchEntries();
   };
 
-  const login = async () => {
-    await supabase.auth.signInWithOAuth({
-      provider: "google",
-    });
-  };
-
-  if (!session)
-    return (
-      <div className="auth-screen">
-        <h1>✨ YOUR EVERYDAY RECORD ✨</h1>
-        <button onClick={login}>Login with Google</button>
-      </div>
-    );
-
   return (
-    <div className="app-container">
+    <div className="wrapper">
       <motion.h1
-        className="title"
-        animate={{ y: [0, -10, 0] }}
-        transition={{ repeat: Infinity, duration: 3 }}
+        className="hero"
+        animate={{ y: [0, -8, 0] }}
+        transition={{ repeat: Infinity, duration: 4 }}
       >
-        ✨ YOUR EVERYDAY RECORD ✨
+        YOUR EVERYDAY RECORD
       </motion.h1>
 
-      <form className="glass-card" onSubmit={handleSubmit}>
-        <div className="emotion-picker">
-          {emotions.map((emo) => (
-            <span
-              key={emo.label}
-              className={`emoji ${
-                selectedEmotion === emo.label ? "selected" : ""
+      <motion.form
+        className="card"
+        onSubmit={handleSubmit}
+        initial={{ opacity: 0, y: 30 }}
+        animate={{ opacity: 1, y: 0 }}
+      >
+        <div className="emotion-grid">
+          {emotions.map((e) => (
+            <div
+              key={e.label}
+              className={`emotion-pill ${
+                emotion === e.label ? "active" : ""
               }`}
-              onClick={() => setSelectedEmotion(emo.label)}
+              style={{ borderColor: e.color }}
+              onClick={() => setEmotion(e.label)}
             >
-              {emo.emoji}
-            </span>
+              {e.label}
+            </div>
           ))}
         </div>
 
         <textarea
-          placeholder="Describe your experience today..."
+          placeholder="What defined your day?"
           value={description}
           onChange={(e) => setDescription(e.target.value)}
           required
         />
 
-        <label>Energy Level: {energy}</label>
-        <input
-          type="range"
-          min="1"
-          max="10"
-          value={energy}
-          onChange={(e) => setEnergy(e.target.value)}
-        />
+        <div className="energy">
+          <span>Energy</span>
+          <input
+            type="range"
+            min="1"
+            max="10"
+            value={energy}
+            onChange={(e) => setEnergy(e.target.value)}
+          />
+        </div>
 
         <button type="submit">Save Entry</button>
-      </form>
+      </motion.form>
 
-      <div className="glass-card">
-        <h2>Mood Analytics</h2>
+      <motion.div
+        className="card"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+      >
+        <h3>Energy Trends</h3>
         <ResponsiveContainer width="100%" height={200}>
-          <BarChart data={entries}>
+          <AreaChart data={entries}>
             <XAxis dataKey="emotion" />
-            <YAxis />
             <Tooltip />
-            <Bar dataKey="energy_level" />
-          </BarChart>
+            <Area dataKey="energy_level" />
+          </AreaChart>
         </ResponsiveContainer>
-      </div>
+      </motion.div>
 
       <div className="entries">
         {entries.map((entry) => (
           <motion.div
             key={entry.id}
-            className="entry-card"
-            whileHover={{ scale: 1.05 }}
+            className="entry"
+            whileHover={{ scale: 1.03 }}
           >
-            <h3>{entry.emotion}</h3>
+            <strong>{entry.emotion}</strong>
             <p>{entry.description}</p>
-            <small>Energy: {entry.energy_level}</small>
           </motion.div>
         ))}
       </div>

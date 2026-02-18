@@ -1,83 +1,99 @@
 body {
   margin: 0;
-  font-family: "Poppins", sans-serif;
-  background: radial-gradient(circle at top, #1f1c2c, #928dab);
+  font-family: "Inter", sans-serif;
+  background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e);
+  background-size: 400% 400%;
+  animation: gradientMove 15s ease infinite;
   color: white;
   display: flex;
   justify-content: center;
 }
 
-.app-container {
-  width: 800px;
-  padding: 40px;
+@keyframes gradientMove {
+  0% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+  100% { background-position: 0% 50%; }
+}
+
+.wrapper {
+  width: 900px;
+  padding: 60px 20px;
+}
+
+.hero {
   text-align: center;
+  font-size: 3rem;
+  font-weight: 700;
+  letter-spacing: 2px;
+  margin-bottom: 50px;
 }
 
-.title {
-  font-size: 2.8rem;
-  margin-bottom: 30px;
-}
-
-.glass-card {
-  backdrop-filter: blur(15px);
-  background: rgba(255, 255, 255, 0.1);
-  padding: 20px;
+.card {
+  backdrop-filter: blur(20px);
+  background: rgba(255, 255, 255, 0.05);
   border-radius: 20px;
-  margin-bottom: 30px;
+  padding: 30px;
+  margin-bottom: 40px;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
 }
 
-.emotion-picker {
+.emotion-grid {
   display: flex;
   justify-content: center;
   gap: 15px;
-  font-size: 2rem;
+  margin-bottom: 20px;
 }
 
-.emoji {
+.emotion-pill {
+  padding: 8px 18px;
+  border-radius: 50px;
+  border: 2px solid;
   cursor: pointer;
-  transition: transform 0.2s;
+  transition: all 0.3s ease;
 }
 
-.emoji:hover {
-  transform: scale(1.3);
+.emotion-pill:hover {
+  transform: translateY(-3px);
 }
 
-.selected {
-  transform: scale(1.4);
+.active {
+  background: white;
+  color: black;
 }
 
 textarea {
   width: 100%;
   height: 100px;
-  border-radius: 12px;
+  border-radius: 15px;
   border: none;
-  padding: 10px;
-  margin-top: 15px;
+  padding: 15px;
+  margin-bottom: 20px;
 }
 
-input[type="range"] {
-  width: 100%;
+.energy {
+  margin-bottom: 20px;
 }
 
 button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border-radius: 12px;
-  border: none;
-  cursor: pointer;
-  font-weight: bold;
-  background: #ffcc70;
-}
-
-.entry-card {
-  backdrop-filter: blur(10px);
-  background: rgba(255, 255, 255, 0.08);
-  padding: 15px;
+  width: 100%;
+  padding: 12px;
   border-radius: 15px;
-  margin-bottom: 15px;
+  border: none;
+  font-weight: 600;
+  background: white;
+  color: black;
+  cursor: pointer;
+  transition: 0.3s;
 }
 
-.auth-screen {
-  text-align: center;
-  margin-top: 100px;
+button:hover {
+  background: #ddd;
+}
+
+.entry {
+  backdrop-filter: blur(15px);
+  background: rgba(255,255,255,0.06);
+  padding: 20px;
+  border-radius: 15px;
+  margin-bottom: 20px;
 }
