@@ -1,120 +1,96 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'; // Import for routing
+import { useEffect, useState } from "react";
+import { supabase } from "./services/supabaseClient";
+import "./App.css";
 
-const App = () => {
-  const [posts, setPosts] = useState([]);
-  const [newPost, setNewPost] = useState({ title: '', body: '' });
-  const [selectedPost, setSelectedPost] = useState(null); // For PUT/DELETE
+function App() {
+  const [emotion, setEmotion] = useState("");
+  const [description, setDescription] = useState("");
+  const [energy, setEnergy] = useState(5);
+  const [entries, setEntries] = useState([]);
 
   useEffect(() => {
-    fetchPosts();
+    fetchEntries();
   }, []);
 
-  const fetchPosts = async () => {
-    try {
-      const response = await axios.get('https://jsonplaceholder.typicode.com/posts');
-      setPosts(response.data);
-    } catch (error) {
-      console.error('Error fetching posts:', error);
+  const fetchEntries = async () => {
+    const { data, error } = await supabase
+      .from("journal_entries")
+      .select("*")
+      .order("created_at", { ascending: false });
+
+    if (!error) setEntries(data);
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    const { error } = await supabase.from("journal_entries").insert([
+      {
+        emotion_summary: emotion,
+        description,
+        energy_level: energy,
+      },
+    ]);
+
+    if (!error) {
+      setEmotion("");
+      setDescription("");
+      setEnergy(5);
+      fetchEntries();
     }
   };
 
-  const createPost = async () => {
-    try {
-      const response = await axios.post('https://jsonplaceholder.typicode.com/posts', newPost);
-      setPosts([...posts, response.data]);
-      setNewPost({ title: '', body: '' }); // Clear input fields
-    } catch (error) {
-      console.error('Error creating post:', error);
-    }
-  };
-
-  const updatePost = async () => {
-    if (!selectedPost) return; // Make sure a post is selected
-
-    try {
-      const response = await axios.put(`https://jsonplaceholder.typicode.com/posts/${selectedPost.id}`, selectedPost);
-      // Update the post in the state
-      const updatedPosts = posts.map(post =>
-        post.id === selectedPost.id ? response.data : post
-      );
-      setPosts(updatedPosts);
-      setSelectedPost(null); // Clear selection after update
-    } catch (error) {
-      console.error('Error updating post:', error);
-    }
-  };
-
-  const deletePost = async (id) => {
-    try {
-      await axios.delete(`https://jsonplaceholder.typicode.com/posts/${id}`);
-      setPosts(posts.filter(post => post.id !== id));
-    } catch (error) {
-      console.error('Error deleting post:', error);
-    }
+  const handleDelete = async (id) => {
+    await supabase.from("journal_entries").delete().eq("id", id);
+    fetchEntries();
   };
 
   return (
-    <Router> {/* Wrap with Router */}
-      <div className="container">
-        <h1>React REST API Example</h1>
+    <div className="container">
+      <h1 className="title">✨ YOUR EVERYDAY RECORD ✨</h1>
 
-        {/* Navigation (optional) */}
-        <nav>
-           <Link to="/">Home</Link> {/* Example Link */}
-        </nav>
+      <form onSubmit={handleSubmit} className="journal-form">
+        <input
+          type="text"
+          placeholder="Emotion (Happy, Sad, Excited...)"
+          value={emotion}
+          onChange={(e) => setEmotion(e.target.value)}
+          required
+        />
 
-        <Routes>
-          <Route path="/" element={
-          <>
-            <h2>Posts</h2>
-            <ul>
-              {posts.map(post => (
-                <li key={post.id} onClick={() => setSelectedPost(post)}>
-                  {post.title}
-                </li>
-              ))}
-            </ul>
+        <textarea
+          placeholder="Describe your experience today..."
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+          required
+        />
 
-            <h2>Create New Post</h2>
-            <input
-              type="text"
-              placeholder="Title"
-              value={newPost.title}
-              onChange={e => setNewPost({ ...newPost, title: e.target.value })}
-            />
-            <textarea
-              placeholder="Body"
-              value={newPost.body}
-              onChange={e => setNewPost({ ...newPost, body: e.target.value })}
-            />
-            <button onClick={createPost}>Create</button>
+        <label>Energy Level: {energy}</label>
+        <input
+          type="range"
+          min="1"
+          max="10"
+          value={energy}
+          onChange={(e) => setEnergy(e.target.value)}
+        />
 
-            {/* Update Form (Shown when a post is selected) */}
-            {selectedPost && (
-              <div>
-                <h2>Update Post</h2>
-                <input
-                  type="text"
-                  value={selectedPost.title}
-                  onChange={e => setSelectedPost({ ...selectedPost, title: e.target.value })}
-                />
-                <textarea
-                  value={selectedPost.body}
-                  onChange={e => setSelectedPost({ ...selectedPost, body: e.target.value })}
-                />
-                <button onClick={updatePost}>Update</button>
-                <button onClick={() => deletePost(selectedPost.id)}>Delete</button>
-              </div>
-            )}
-          </>
-          } />
-        </Routes>
+        <button type="submit">Save Entry</button>
+      </form>
 
+      <div className="entries">
+        {entries.map((entry) => (
+          <div key={entry.id} className="entry-card">
+            <h3>{entry.emotion_summary}</h3>
+            <p>{entry.description}</p>
+            <small>Energy: {entry.energy_level}</small>
+            <button onClick={() => handleDelete(entry.id)}>
+              Delete
+            </button>
+          </div>
+        ))}
       </div>
-    </Router>
+    </div>
   );
-};
+}
 
 export default App;

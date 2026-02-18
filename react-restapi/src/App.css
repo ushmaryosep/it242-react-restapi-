@@ -1,42 +1,48 @@
-#root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: linear-gradient(to right, #1e3c72, #2a5298);
+  color: white;
+  display: flex;
+  justify-content: center;
+}
+
+.container {
+  width: 600px;
   text-align: center;
+  padding: 40px;
 }
 
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.react:hover {
-  filter: drop-shadow(0 0 2em #61dafbaa);
+.title {
+  font-size: 2.5rem;
+  margin-bottom: 30px;
 }
 
-@keyframes logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+.journal-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  a:nth-of-type(2) .logo {
-    animation: logo-spin infinite 20s linear;
-  }
+.journal-form input,
+.journal-form textarea {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
 }
 
-.card {
-  padding: 2em;
+.journal-form button {
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  background: #ffcc00;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-.read-the-docs {
-  color: #888;
+.entry-card {
+  background: rgba(255, 255, 255, 0.1);
+  padding: 15px;
+  margin-top: 15px;
+  border-radius: 10px;
 }
