@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./services/supabaseClient";
+import "./App.css";
 
 function App() {
   const [entries, setEntries] = useState([]);
@@ -11,42 +12,38 @@ function App() {
   }, []);
 
   const fetchEntries = async () => {
-    const { data, error } = await supabase
+    const { data } = await supabase
       .from("journal_entries")
       .select("*")
       .order("created_at", { ascending: false });
 
-    if (!error) setEntries(data || []);
+    setEntries(data || []);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    const { error } = await supabase.from("journal_entries").insert([
+    await supabase.from("journal_entries").insert([
       { emotion, description },
     ]);
 
-    if (!error) {
-      setEmotion("");
-      setDescription("");
-      fetchEntries();
-    }
+    setEmotion("");
+    setDescription("");
+    fetchEntries();
   };
 
   return (
-    <div style={{ padding: "40px", fontFamily: "sans-serif" }}>
-      <h1>Your Everyday Record</h1>
+    <div className="wrapper">
+      <h1 className="hero">Your Everyday Record</h1>
 
-      <form onSubmit={handleSubmit}>
+      <form className="journal-box" onSubmit={handleSubmit}>
         <input
           type="text"
-          placeholder="Mood"
+          placeholder="Mood..."
           value={emotion}
           onChange={(e) => setEmotion(e.target.value)}
           required
         />
-
-        <br /><br />
 
         <textarea
           placeholder="Write about your day..."
@@ -55,19 +52,17 @@ function App() {
           required
         />
 
-        <br /><br />
-
-        <button type="submit">Save</button>
+        <button type="submit">Save Memory</button>
       </form>
 
-      <hr />
-
-      {entries.map((entry) => (
-        <div key={entry.id}>
-          <strong>{entry.emotion}</strong>
-          <p>{entry.description}</p>
-        </div>
-      ))}
+      <div className="grid">
+        {entries.map((entry) => (
+          <div key={entry.id} className="card">
+            <span className="tag">{entry.emotion}</span>
+            <p>{entry.description}</p>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
