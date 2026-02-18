@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { supabase } from "./services/supabaseClient";
-import Masonry from "react-masonry-css";
 import { motion } from "framer-motion";
 import "./App.css";
 
