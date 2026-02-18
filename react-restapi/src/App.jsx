@@ -23,24 +23,28 @@ function App() {
   }, []);
 
   const fetchEntries = async () => {
-    const { data } = await supabase
+    const { data, error } = await supabase
       .from("journal_entries")
       .select("*")
       .order("created_at", { ascending: false });
 
-    setEntries(data || []);
+    if (!error) setEntries(data || []);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    await supabase.from("journal_entries").insert([
+    if (!emotion) return;
+
+    const { error } = await supabase.from("journal_entries").insert([
       { emotion, description },
     ]);
 
-    setEmotion("");
-    setDescription("");
-    fetchEntries();
+    if (!error) {
+      setEmotion("");
+      setDescription("");
+      fetchEntries();
+    }
   };
 
   return (
